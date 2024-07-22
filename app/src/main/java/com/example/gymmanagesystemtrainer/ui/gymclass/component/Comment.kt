@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
@@ -27,7 +28,7 @@ import com.example.gymmanagesystemtrainer.ui.component.Gap
 fun Comment(modifier: Modifier, comment: Comment) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         AsyncImage(
-            model = ImageRequest.Builder(LocalContext.current).data("abc")
+            model = ImageRequest.Builder(LocalContext.current).data(comment.getUser()?.avatarUrl)
                 .placeholder(
                     R.drawable.avatar_placeholder
                 ).error(R.drawable.avatar_placeholder).build(),
@@ -46,7 +47,8 @@ fun Comment(modifier: Modifier, comment: Comment) {
                 .background(color = MaterialTheme.colorScheme.secondaryContainer)
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                //                            Text(text = communication.)
+                Text(text = comment.getUser()?.name ?: "", style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold)
+                Gap.k8.Height()
                 Text(text = comment.message!!)
 
             }

@@ -32,6 +32,7 @@ fun TextField(
     value: String? = null,
     visualTransformation: VisualTransformation = VisualTransformation.None,
     maxLines: Int = 1,
+//    minLines: Int = 1,
     suffix: @Composable (() -> Unit)? = null,
     prefix: @Composable (() -> Unit)? = null,
     onTextChange: (String) -> Unit
@@ -64,7 +65,7 @@ fun TextField(
             visualTransformation
         },
         maxLines = maxLines,
-        minLines = maxLines,
+        minLines = 1,
         suffix = {
             if (visualTransformation is PasswordVisualTransformation) {
 

@@ -6,6 +6,7 @@ data class User(
 
     @SerializedName("id") var id: String? = null,
     @SerializedName("email") var email: String? = null,
+    @SerializedName("phone") var phone: String? = null,
     @SerializedName("name") var name: String? = null,
     @SerializedName("role") var role: String? = null,
     @SerializedName("status") var status: String? = null,
