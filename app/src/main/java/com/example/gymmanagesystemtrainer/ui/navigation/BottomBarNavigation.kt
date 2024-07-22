@@ -12,11 +12,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.gymmanagesystemtrainer.ui.gymclass.AllClassScreen
 import com.example.gymmanagesystemtrainer.ui.gymclass.ClassScreen
+import com.example.gymmanagesystemtrainer.ui.gymclass.component.QRScanner
 import com.example.gymmanagesystemtrainer.ui.gymclass.detail.ClassDetailScreen
 import com.example.gymmanagesystemtrainer.ui.home.HomeScreen
 import com.example.gymmanagesystemtrainer.ui.login.LoginScreen
 import com.example.gymmanagesystemtrainer.ui.profile.ProfileDetailScreen
 import com.example.gymmanagesystemtrainer.ui.profile.ProfileScreen
+import com.example.gymmanagesystemtrainer.ui.schedule.ScheduleScreen
 import com.example.gymmanagesystemtrainer.ui.signup.SignupScreen
 import com.example.gymmanagesystemtrainer.utils.DataState
 import com.example.gymmanagesystemtrainer.viewmodel.AuthViewModel
@@ -31,20 +33,24 @@ fun BottomBarNavigation(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Route.Home.route,
+        startDestination = Route.Schedule.route,
         modifier = modifier,
     ) {
-        composable(Route.Home.route) { HomeScreen() }
+        composable(Route.Schedule.route) { ScheduleScreen(onClassClick = { courseId, classId ->
+            navController.navigate(Route.ClassDetail.createRouteWithId(courseId, classId))
+        }) }
         composable(Route.Profile.route) {
             ProfileScreen(onProfileDetailClick = { id ->
                 navController.navigate(Route.ProfileDetail.createRouteWithId(id))
             },
                 onLogoutClick = onLogoutClick)
         }
-        composable(Route.Class.route) {
-            ClassScreen(
-                onViewAllMyClassClick = { navController.navigate(Route.AllClass.route) },
-                onClassClick = { id -> navController.navigate(Route.ClassDetail.createRouteWithId(id)) })
+        composable(Route.ClassDetail.route) { backStackEntry ->
+            val courseId = backStackEntry.arguments?.getString("courseId")
+            val classId = backStackEntry.arguments?.getString("classId")
+            ClassDetailScreen(courseId = courseId!!, classId = classId!!, onScanClick = {
+                navController.navigate(Route.QRScanner.route)
+            })
         }
         composable(Route.Signup.route) {
             SignupScreen()
@@ -53,18 +59,8 @@ fun BottomBarNavigation(
             val userId = backStackEntry.arguments?.getString("id")
             ProfileDetailScreen(userId = userId!!)
         }
-        composable(Route.AllClass.route) {
-            AllClassScreen(onClassClick = { id ->
-                navController.navigate(
-                    Route.ClassDetail.createRouteWithId(
-                        id
-                    )
-                )
-            })
-        }
-        composable(Route.ClassDetail.route) { backStackEntry ->
-            val classId = backStackEntry.arguments?.getString("id")
-            ClassDetailScreen(classId = classId!!)
+        composable(Route.QRScanner.route) {
+            QRScanner()
         }
     }
 }

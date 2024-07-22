@@ -40,7 +40,7 @@ class AuthViewModel @Inject constructor(
             _authState.value = DataState.Loading
             try {
                 val response = authRepository.login(email, password)
-                if (response.user.role != "Staff") {
+                if (response.user.role != "Trainer") {
                     _authState.value = DataState.Error("Username or password is invalid")
                     return@launch
                 }

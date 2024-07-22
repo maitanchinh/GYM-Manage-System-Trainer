@@ -39,11 +39,8 @@ fun AppNavigation(
         composable(Route.Login.route) {
             if (!isLoggedIn) {
                 LoginScreen(
-//                    onLoginSuccess = { navController.navigate(Route.Dashboard.route) },
-                    onSignupClick = { navController.navigate(Route.Signup.route) },
-                    isLoading = authState is DataState.Loading,
-                    onLoginClick = {authViewModel.login(email, password)},
-                    authViewModel = authViewModel
+                    authViewModel = authViewModel,
+                    navController = navController
                 )
             } else {
                 DashboardScreen(navController = navController, onLogoutClick = {

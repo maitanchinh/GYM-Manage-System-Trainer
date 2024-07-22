@@ -23,25 +23,45 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import com.example.gymmanagesystemtrainer.R
+import com.example.gymmanagesystemtrainer.model.Course
 import com.example.gymmanagesystemtrainer.model.GClass
 import com.example.gymmanagesystemtrainer.ui.component.Gap
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
 
 @Composable
-fun OverviewContent(gClass: GClass) {
+fun OverviewContent(course: Course) {
     var isExpanded by remember { mutableStateOf(false) }
-    val fullText = gClass.description ?: ""
+    val fullText = course.description ?: ""
     val previewText = if (fullText.length > 200) fullText.substring(0, 200) + "..." else fullText
+    val lessonTime = LocalTime.parse(
+        course.lessonTime,
+        DateTimeFormatter.ofPattern("HH:mm:ss")
+    ).hour * 60 + LocalTime.parse(course.lessonTime, DateTimeFormatter.ofPattern("HH:mm:ss")).minute
 
     Column {
-        Text("Class Information", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
+        Text(
+            "Class Information",
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold
+        )
         Gap.k16.Height()
         val text = if (isExpanded) fullText else previewText
         val annotatedText = buildAnnotatedString {
             append(text)
             append(" ")
             pushStringAnnotation(tag = "showMoreOrLess", annotation = "")
-            withStyle(style = SpanStyle(color = MaterialTheme.colorScheme.primary, textDecoration = TextDecoration.Underline)) {
-                append(if (fullText.length > 200){if (isExpanded) "Show Less" else "Show More"} else "")
+            withStyle(
+                style = SpanStyle(
+                    color = MaterialTheme.colorScheme.primary,
+                    textDecoration = TextDecoration.Underline
+                )
+            ) {
+                append(
+                    if (fullText.length > 200) {
+                        if (isExpanded) "Show Less" else "Show More"
+                    } else ""
+                )
             }
             pop()
         }
@@ -49,7 +69,11 @@ fun OverviewContent(gClass: GClass) {
             text = annotatedText,
             style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
             onClick = { offset ->
-                annotatedText.getStringAnnotations(tag = "showMoreOrLess", start = offset, end = offset)
+                annotatedText.getStringAnnotations(
+                    tag = "showMoreOrLess",
+                    start = offset,
+                    end = offset
+                )
                     .firstOrNull()?.let {
                         isExpanded = !isExpanded
                     }
@@ -60,27 +84,59 @@ fun OverviewContent(gClass: GClass) {
         Text("Overview", style = MaterialTheme.typography.bodyLarge, fontWeight = FontWeight.Bold)
         Gap.k16.Height()
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(painter = painterResource(id = R.drawable.round_access_time_24), contentDescription = null, tint = Color.Gray)
+            Icon(
+                painter = painterResource(id = R.drawable.round_access_time_24),
+                contentDescription = null,
+                tint = Color.Gray
+            )
             Gap.k8.Width()
-            Text(text = "90 minutes per lesson", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+            Text(
+                text = "$lessonTime minutes per lesson",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
         }
         Gap.k8.Height()
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(painter = painterResource(id = R.drawable.round_check_circle_24), contentDescription = null, tint = Color.Gray)
+            Icon(
+                painter = painterResource(id = R.drawable.round_check_circle_24),
+                contentDescription = null,
+                tint = Color.Gray
+            )
             Gap.k8.Width()
-            Text(text = "1234 students completed", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+            Text(
+                text = "1234 students completed",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
         }
         Gap.k8.Height()
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(painter = painterResource(id = R.drawable.round_emoji_people_24), contentDescription = null, tint = Color.Gray)
+            Icon(
+                painter = painterResource(id = R.drawable.round_emoji_people_24),
+                contentDescription = null,
+                tint = Color.Gray
+            )
             Gap.k8.Width()
-            Text(text = "The instructor has a teaching certificate", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+            Text(
+                text = "The instructor has a teaching certificate",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
         }
         Gap.k8.Height()
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Icon(painter = painterResource(id = R.drawable.round_fitness_center_24), contentDescription = null, tint = Color.Gray)
+            Icon(
+                painter = painterResource(id = R.drawable.round_fitness_center_24),
+                contentDescription = null,
+                tint = Color.Gray
+            )
             Gap.k8.Width()
-            Text(text = "Well-equipped", style = MaterialTheme.typography.bodyMedium, color = Color.Gray)
+            Text(
+                text = "Well-equipped",
+                style = MaterialTheme.typography.bodyMedium,
+                color = Color.Gray
+            )
         }
         Gap.k8.Height()
     }

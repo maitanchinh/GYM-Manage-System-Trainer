@@ -27,20 +27,12 @@ import com.example.gymmanagesystemtrainer.viewmodel.AuthViewModel
 @Composable
 fun LoginScreen(
     authViewModel: AuthViewModel,
-//    onLoginSuccess: () -> Unit,
-    onLoginClick: () -> Unit,
-    onSignupClick: () -> Unit,
-    isLoading: Boolean = false,
+    navController: NavHostController,
 ) {
     val authState by authViewModel.authState.collectAsState()
+    val isLoading = authState is DataState.Loading
     val email by authViewModel.email.collectAsState()
     val password by authViewModel.password.collectAsState()
-
-//    LaunchedEffect(authState) {
-//        if (authState is DataState.Success) {
-//            onLoginSuccess()
-//        }
-//    }
 
     Column(
         modifier = Modifier
@@ -51,9 +43,11 @@ fun LoginScreen(
         Spacer(modifier = Modifier.height(8.dp))
         TextField(value = password, label = "Password", visualTransformation = PasswordVisualTransformation(), onTextChange = authViewModel::onPasswordChange)
         Spacer(modifier = Modifier.height(32.dp))
-        LargeButton(text = "Login", isLoading = isLoading, onClick = onLoginClick, enabled = email.isNotEmpty() && password.isNotEmpty())
+        LargeButton(text = "Login", isLoading = isLoading, onClick = {authViewModel.login(email, password)}, enabled = email.isNotEmpty() && password.isNotEmpty())
         Spacer(modifier = Modifier.height(16.dp))
-        TextButton(onClick = onSignupClick) {
+        TextButton(onClick = {
+            navController.navigate(Route.Signup.route)
+        }) {
             Text(text = "Don't have an account? Register now!")
         }
         when(authState) {

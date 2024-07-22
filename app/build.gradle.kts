@@ -11,7 +11,7 @@ android {
 
     defaultConfig {
         applicationId = "com.example.gymmanagesystemtrainer"
-        minSdk = 24
+        minSdk = 26
         targetSdk = 34
         versionCode = 1
         versionName = "1.0"
@@ -52,49 +52,55 @@ android {
 }
 
 dependencies {
-    runtimeOnly("com.google.accompanist:accompanist-swiperefresh:0.34.0")
-    implementation("com.google.accompanist:accompanist-swiperefresh:0.34.0")
+//    implementation (libs.com.google.firebase.firebase.ml.vision2)
+    implementation (libs.androidx.camera.core)
+    implementation (libs.androidx.camera.camera2)
+    implementation (libs.androidx.camera.lifecycle)
+    implementation (libs.androidx.camera.view)
+    implementation (libs.accompanist.permissions)
+    implementation(libs.androidx.material3.android)
+    implementation(libs.play.services.mlkit.barcode.scanning)
+    runtimeOnly(libs.accompanist.swiperefresh)
+    implementation(libs.accompanist.swiperefresh)
 
-    implementation ("com.google.dagger:hilt-android:2.51.1")
-    kapt ("com.google.dagger:hilt-android-compiler:2.51.1")
+    implementation (libs.hilt.android)
+    kapt (libs.dagger.hilt.android.compiler)
 //    implementation ("androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha03")
 //    kapt ("androidx.hilt:hilt-compiler:1.2.0")
     // https://mvnrepository.com/artifact/com.squareup.retrofit2/retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.11.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.11.0")
+    implementation(libs.retrofit)
+    implementation(libs.converter.gson)
 
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
-    implementation("com.google.code.gson:gson:2.11.0")
+    implementation(libs.gson)
 
-    implementation ("com.google.accompanist:accompanist-flowlayout:0.25.1")
-    implementation("com.google.dagger:hilt-android:2.51.1")
-    kapt("com.google.dagger:hilt-android-compiler:2.51.1")
-    implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    implementation (libs.accompanist.flowlayout)
+    implementation(libs.hilt.android)
+    kapt(libs.dagger.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
     //Image loading
-    implementation("io.coil-kt:coil-compose:2.6.0")
+    implementation(libs.coil.compose)
 
-    implementation ("androidx.datastore:datastore-preferences:1.1.1")
+    implementation (libs.androidx.datastore.preferences)
 
-    implementation ("androidx.compose.runtime:runtime-livedata:1.6.8")
-    implementation("androidx.navigation:navigation-compose:2.7.7")
-    implementation("androidx.core:core-ktx:1.13.1")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.2")
-    implementation("androidx.activity:activity-compose:1.9.0")
-    implementation(platform("androidx.compose:compose-bom:2024.06.00"))
-    implementation("androidx.compose.ui:ui")
-    implementation("androidx.compose.ui:ui-graphics")
-    implementation("androidx.compose.ui:ui-tooling-preview")
-    implementation("androidx.compose.material3:material3")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-android:2.8.2")
-    implementation("androidx.compose.runtime:runtime-android:1.6.8")
-    implementation("androidx.compose.ui:ui-android:1.6.8")
-    implementation("androidx.navigation:navigation-runtime-ktx:2.7.7")
+    implementation (libs.androidx.runtime.livedata)
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.ui)
+    implementation(libs.ui.graphics)
+    implementation(libs.ui.tooling.preview)
+//    implementation(libs.androidx.material3)
+    implementation(libs.androidx.lifecycle.viewmodel.android)
+    implementation(libs.runtime.android)
+    implementation(libs.androidx.ui.android)
+    implementation(libs.navigation.runtime.ktx)
 
-    testImplementation("junit:junit:4.13.2")
-    androidTestImplementation("androidx.test.ext:junit:1.1.5")
-    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
-    androidTestImplementation(platform("androidx.compose:compose-bom:2024.06.00"))
-    androidTestImplementation("androidx.compose.ui:ui-test-junit4")
-    debugImplementation("androidx.compose.ui:ui-tooling")
-    debugImplementation("androidx.compose.ui:ui-test-manifest")
+    testImplementation(libs.junit)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.ui.test.junit4)
+    debugImplementation(libs.ui.tooling)
+    debugImplementation(libs.ui.test.manifest)
 }

@@ -283,7 +283,7 @@ fun ClassScreen(
                     }
 
                     is DataState.Success -> {
-                        val items = (classes as? DataState.Success)?.data?.classes ?: emptyList()
+                        val items = (classes as? DataState.Success)?.data?.data ?: emptyList()
                         items(items.size) { index ->
                             ClassCard(gymClass = items[index], onClassClick = onClassClick)
                         }

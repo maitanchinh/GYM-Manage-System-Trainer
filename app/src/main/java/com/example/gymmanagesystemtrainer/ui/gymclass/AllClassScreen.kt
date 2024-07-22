@@ -38,7 +38,7 @@ fun AllClassScreen(viewModel: ClassViewModel = hiltViewModel(), onClassClick: (i
         verticalArrangement = Arrangement.spacedBy(16.dp),
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        val items = (classes.value as? DataState.Success)?.data?.classes ?: emptyList()
+        val items = (classes.value as? DataState.Success)?.data?.data ?: emptyList()
 //        val items = classes.value.classes
         item(span = { GridItemSpan(2) }) {
             Column {

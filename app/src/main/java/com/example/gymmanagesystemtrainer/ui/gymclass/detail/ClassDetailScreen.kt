@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -36,163 +38,225 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.gymmanagesystemtrainer.R
+import com.example.gymmanagesystemtrainer.model.FilterRequestBody
 import com.example.gymmanagesystemtrainer.ui.component.Gap
+import com.example.gymmanagesystemtrainer.utils.DataState
 import com.example.gymmanagesystemtrainer.viewmodel.ClassViewModel
+import com.example.gymmanagesystemtrainer.viewmodel.CourseViewModel
 
 @Composable
-fun ClassDetailScreen(classId: String, viewModel: ClassViewModel = hiltViewModel()) {
+fun ClassDetailScreen(
+    courseId: String,
+    classId: String? = null,
+    courseViewModel: CourseViewModel = hiltViewModel(),
+    classViewModel: ClassViewModel = hiltViewModel(),
+    onScanClick: () -> Unit
+) {
     var selectedTab by remember { mutableStateOf("Overview") }
-    val gClass = viewModel.gClass.collectAsState()
+    val courseState by courseViewModel.course.collectAsState()
+    var tabs = emptyList<String>()
     LaunchedEffect(Unit) {
-        viewModel.getClassById(classId)
+        courseViewModel.getCourseById(courseId)
+        if (classId != null) {
+
+            classViewModel.fetchClassesEnrolled(FilterRequestBody(courseId = courseId))
+        }
+
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(start = 16.dp, end = 16.dp, bottom = 0.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
-        Box(
-            modifier = Modifier
+    when (courseState) {
+        is DataState.Success -> {
+            val course = (courseState as DataState.Success).data
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(start = 16.dp, end = 16.dp, bottom = 0.dp)
+                    .verticalScroll(rememberScrollState())
+            ) {
+                Box(
+                    modifier = Modifier
 //                .graphicsLayer {
 //                  shadowElevation = 2.dp.toPx()
 //                    shape = RoundedCornerShape(5)
 //                    clip = true
 //                }
-                .clip(shape = RoundedCornerShape(5))
-                .background(MaterialTheme.colorScheme.secondaryContainer)
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(8.dp),
-            ) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current).data(gClass.value.thumbnailUrl)
-                        .placeholder(
-                            R.drawable.placeholder
-                        ).error(R.drawable.placeholder).build(),
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(shape = RoundedCornerShape(5))
-                        .aspectRatio(16f / 9f),
-                    contentScale = ContentScale.Crop
-                )
-                Gap.k16.Height()
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .clip(shape = RoundedCornerShape(16.dp))
+                        .background(MaterialTheme.colorScheme.secondaryContainer)
                 ) {
-                    Text(
-                        text = "Cardio",
-                        style = MaterialTheme.typography.bodyLarge,
-                        color = Color.Gray,
-                        fontWeight = FontWeight.Medium
-                    )
-
-                    Text(text = "Ratings", color = Color.Gray, fontWeight = FontWeight.Medium)
-                }
-                Gap.k4.Height()
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = gClass.value.name ?: "No name",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "4.5",
-                            style = MaterialTheme.typography.bodyMedium
-                        )
-                        Gap.k4.Width()
-                        Icon(
-                            painter = painterResource(id = R.drawable.round_star_24),
-                            contentDescription = null,
-                            tint = Color(0xFFF2C300)
-                        )
-                    }
-
-                }
-                Gap.k4.Height()
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_groups_24),
-                        contentDescription = null,
-                        tint = Color.Gray
-                    )
-                    Gap.k8.Width()
-                    Text(
-                        text = "${gClass.value.participant}/${gClass.value.totalMember} members",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray,
-                    )
-                    Gap.k32.Width()
-                    Icon(
-                        painter = painterResource(id = R.drawable.round_access_time_24),
-                        contentDescription = null,
-                        tint = Color.Gray
-                    )
-                    Gap.k8.Width()
-                    Text(
-                        text = "${gClass.value.totalLesson} lessons",
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray,
-                    )
-                }
-            }
-        }
-        Gap.k32.Height()
-        Box(
-            modifier = Modifier
-                .clip(shape = RoundedCornerShape(20))
-                .background(color = MaterialTheme.colorScheme.primaryContainer)
-        ) {
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-            ) {
-                val tabs = listOf("Overview", "Instructor", "Reviews", "Requirements")
-
-                tabs.forEach { tab ->
-                    Box(
+                    Column(
                         modifier = Modifier
-                            .clip(shape = RoundedCornerShape(8.dp))
-                            .background(
-                                color = if (selectedTab == tab) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
-                            )
-                            .clickable { selectedTab = tab }
-                            .padding(8.dp)
+                            .fillMaxWidth()
+                            .padding(8.dp),
                     ) {
-                        Text(
-                            text = tab,
-                            color = if (selectedTab == tab) MaterialTheme.colorScheme.primary else Color.Gray,
-                            fontWeight = FontWeight.Medium,
-                            style = MaterialTheme.typography.titleSmall
+                        AsyncImage(
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(course.thumbnailUrl)
+                                .placeholder(
+                                    R.drawable.placeholder
+                                ).error(R.drawable.placeholder).build(),
+                            contentDescription = null,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(shape = RoundedCornerShape(5))
+                                .aspectRatio(16f / 9f),
+                            contentScale = ContentScale.Crop
                         )
+                        Gap.k16.Height()
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = course.category?.name ?: "No category",
+                                style = MaterialTheme.typography.bodyLarge,
+                                color = Color.Gray,
+                                fontWeight = FontWeight.Medium
+                            )
+
+                            Text(
+                                text = "Ratings",
+                                color = Color.Gray,
+                                fontWeight = FontWeight.Medium
+                            )
+                        }
+                        Gap.k4.Height()
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = course.name ?: "No name",
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = "4.5",
+                                    style = MaterialTheme.typography.bodyMedium
+                                )
+                                Gap.k4.Width()
+                                Icon(
+                                    painter = painterResource(id = R.drawable.round_star_24),
+                                    contentDescription = null,
+                                    tint = Color(0xFFF2C300)
+                                )
+                            }
+
+                        }
+                        Gap.k4.Height()
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.round_groups_24),
+                                contentDescription = null,
+                                tint = Color.Gray
+                            )
+                            Gap.k8.Width()
+                            Text(
+                                text = "${course.totalMember} members",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray,
+                            )
+                            Gap.k32.Width()
+                            Icon(
+                                painter = painterResource(id = R.drawable.round_access_time_24),
+                                contentDescription = null,
+                                tint = Color.Gray
+                            )
+                            Gap.k8.Width()
+                            Text(
+                                text = "${course.totalLesson} lessons",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.Gray,
+                            )
+                        }
                     }
                 }
+                Gap.k16.Height()
+                Box(
+                    modifier = Modifier
+                        .clip(shape = RoundedCornerShape(16.dp))
+                        .background(color = MaterialTheme.colorScheme.primaryContainer)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        if (classId == null)
+                            tabs = listOf("Overview", "Instructor", "Reviews", "Requirements")
+                        else
+                            tabs = listOf("Overview", "Communication", "Feedback", "Attendance")
+
+                        tabs.forEach { tab ->
+                            Box(
+                                modifier = Modifier
+                                    .clip(shape = RoundedCornerShape(8.dp))
+                                    .background(
+                                        color = if (selectedTab == tab) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent
+                                    )
+                                    .clickable { selectedTab = tab }
+                                    .padding(8.dp)
+                            ) {
+                                Text(
+                                    text = tab,
+                                    color = if (selectedTab == tab) MaterialTheme.colorScheme.primary else Color.Gray,
+                                    fontWeight = FontWeight.Medium,
+                                    style = MaterialTheme.typography.titleSmall
+                                )
+                            }
+                        }
+                    }
+                }
+                Gap.k16.Height()
+                if (classId == null)
+                    when (selectedTab) {
+                        "Overview" -> {
+                            OverviewContent(course = course)
+                        }
+
+                        "Instructor" -> {
+                            Text(text = "Instructor")
+                        }
+
+                        "Reviews" -> {
+                            Text(text = "Reviews")
+                        }
+
+                        "Requirements" -> {
+                            Text(text = "Requirements")
+                        }
+                    }
+                else
+                    when (selectedTab) {
+                        "Overview" -> {
+                            OverviewContent(course = course)
+                        }
+
+                        "Communication" -> {
+                            CommunicationContent(modifier = Modifier.fillMaxSize().weight(1f), classId = classId)
+                        }
+
+                        "Feedback" -> {
+                            FeedbackContent()
+                        }
+
+                        "Attendance" -> {
+                            AttendanceContent(modifier = Modifier.fillMaxSize().weight(1f), classId = classId, onScanClick = onScanClick)
+                        }
+                    }
             }
         }
-        Gap.k16.Height()
-        when (selectedTab) {
-            "Overview" -> {
-                OverviewContent(gClass.value)
-            }
-            "Instructor" -> {
-                Text(text = "Instructor")
-            }
-            "Reviews" -> {
-                Text(text = "Reviews")
-            }
-            "Requirements" -> {
-                Text(text = "Requirements")
+
+        is DataState.Error -> {
+            Text(text = "Error")
+        }
+
+        is DataState.Loading -> {
+            Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(modifier = Modifier.size(50.dp))
             }
         }
+
+        else -> {}
     }
 }
