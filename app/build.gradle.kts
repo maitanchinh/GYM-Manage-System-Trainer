@@ -52,6 +52,8 @@ android {
 }
 
 dependencies {
+    runtimeOnly(libs.accompanist.swiperefresh)
+    implementation(libs.accompanist.swiperefresh)
 //    implementation (libs.com.google.firebase.firebase.ml.vision2)
     implementation (libs.androidx.camera.core)
     implementation (libs.androidx.camera.camera2)
