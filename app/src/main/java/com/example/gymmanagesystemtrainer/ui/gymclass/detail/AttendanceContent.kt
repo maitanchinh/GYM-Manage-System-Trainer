@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import androidx.activity.result.ActivityResultLauncher
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +21,8 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -33,14 +36,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.asImageBitmap
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
+import com.example.gymmanagesystemtrainer.R
 import com.example.gymmanagesystemtrainer.model.Attendance
 import com.example.gymmanagesystemtrainer.model.FilterRequestBody
 import com.example.gymmanagesystemtrainer.model.Lesson
 import com.example.gymmanagesystemtrainer.ui.component.shimmerLoadingAnimation
+import com.example.gymmanagesystemtrainer.ui.theme.ForestGreen
 import com.example.gymmanagesystemtrainer.utils.DataState
 import com.example.gymmanagesystemtrainer.utils.parseDateTime
 import com.example.gymmanagesystemtrainer.viewmodel.AttendanceViewModel
@@ -48,6 +55,12 @@ import com.example.gymmanagesystemtrainer.viewmodel.LessonViewModel
 import com.example.gymmanagesystemtrainer.viewmodel.UserViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.qrcode.QRCodeWriter
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -61,11 +74,14 @@ fun AttendanceContent(
     onScanClick: () -> Unit
 ) {
     val attendancesState by attendanceViewModel.attendances.collectAsState()
+    val trainerAttendanceState by attendanceViewModel.trainerAttendances.collectAsState()
     val lessonsState by lessonViewModel.lessons.collectAsState()
     val isRefreshing by remember { mutableStateOf(false) }
     val swipeRefreshState = rememberSwipeRefreshState(isRefreshing)
     var qrString by remember { mutableStateOf("") }
     var qrCodeImage by remember { mutableStateOf<Bitmap?>(null) }
+    var isShowDialog by remember { mutableStateOf(false) }
+    var trainerAttendancedLessons by remember { mutableStateOf(ArrayList<Lesson>()) }
 
     LaunchedEffect(Unit) {
         lessonViewModel.getLessons(
@@ -78,6 +94,13 @@ fun AttendanceContent(
         attendanceViewModel.fetchAttendances(
             FilterRequestBody(
                 classId = classId,
+                orderBy = "CreateAt",
+                isAscending = true
+            )
+        )
+        attendanceViewModel.fetchTrainerAttendances(
+            FilterRequestBody(
+                trainerId = userViewModel.getUser()!!.id!!,
                 orderBy = "CreateAt",
                 isAscending = true
             )
@@ -110,6 +133,15 @@ fun AttendanceContent(
                 when (attendancesState) {
                     is DataState.Success -> {
                         val attendances = (attendancesState as DataState.Success).data.data
+                        when (trainerAttendanceState) {
+                            is DataState.Success -> {
+                                val trainerAttendances =
+                                    (trainerAttendanceState as DataState.Success).data.data
+                                trainerAttendancedLessons =
+                                    mapAttendanceToSlots(trainerAttendances, lessons)
+                            }
+                            else -> {}
+                        }
                         val attendanceLessons = mapAttendanceToSlots(attendances, lessons)
                         val lastPastLessonIndex = attendanceLessons.indexOfLast { it.isPast }
                         val listState = rememberLazyListState()
@@ -161,6 +193,37 @@ fun AttendanceContent(
                                             )
                                             Text(text = "$startTime - $endTime  $date")
                                         }
+                                        if (lastPastLessonIndex == index - 1) {
+                                            IconButton(onClick = {
+
+                                                qrString =
+                                                    userViewModel.getUser()!!.id!! + "_" + attendanceLessons[index].id
+                                                CoroutineScope(Dispatchers.Main).launch {
+                                                    qrCodeImage = generateQRCodeImage(qrString)
+                                                    isShowDialog = true
+                                                }
+                                            }) {
+                                                Icon(
+                                                    painter = painterResource(id = R.drawable.round_qr_code_2_24),
+                                                    contentDescription = "QR code",
+                                                    tint = MaterialTheme.colorScheme.onSurface
+                                                )
+                                            }
+                                        } else if (lessons[index].isPast && trainerAttendancedLessons.isNotEmpty()) {
+                                            if (trainerAttendancedLessons[index].isAttendance) {
+                                                Icon(
+                                                    painter = painterResource(id = R.drawable.round_check_circle_outline_24),
+                                                    contentDescription = null,
+                                                    tint = ForestGreen
+                                                )
+                                            } else {
+                                                Icon(
+                                                    painter = painterResource(id = R.drawable.round_do_not_disturb_24),
+                                                    contentDescription = null,
+                                                    tint = MaterialTheme.colorScheme.error
+                                                )
+                                            }
+                                        }
                                     }
                                 }
                             }
@@ -191,6 +254,17 @@ fun AttendanceContent(
 
             else -> {}
         }
+        if (isShowDialog) {
+            Dialog(onDismissRequest = { isShowDialog = false }) {
+                qrCodeImage?.let {
+                    Image(
+                        bitmap = it.asImageBitmap(),
+                        contentDescription = "Attendance QR Code",
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -208,3 +282,22 @@ fun mapAttendanceToSlots(
     return lessons
 }
 
+suspend fun generateQRCodeImage(text: String): Bitmap? = withContext(Dispatchers.Default) {
+    try {
+        val bitMatrix = QRCodeWriter().encode(text, BarcodeFormat.QR_CODE, 700, 700)
+        val bitmap = Bitmap.createBitmap(700, 700, Bitmap.Config.RGB_565)
+        for (x in 0 until 700) {
+            for (y in 0 until 700) {
+                bitmap.setPixel(
+                    x,
+                    y,
+                    if (bitMatrix[x, y]) android.graphics.Color.BLACK else android.graphics.Color.WHITE
+                )
+            }
+        }
+        bitmap
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}

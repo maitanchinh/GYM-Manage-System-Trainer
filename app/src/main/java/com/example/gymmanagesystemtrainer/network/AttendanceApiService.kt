@@ -14,6 +14,9 @@ interface AttendanceApiService {
     @POST("attendances/filter")
     suspend fun getAttendances(@Body filterRequestBody: FilterRequestBody): Response<Attendance>
 
+    @POST("trainer-attendances/filter")
+    suspend fun getTrainerAttendances(@Body filterRequestBody: FilterRequestBody): Response<Attendance>
+
     @RequiresAuth
     @Multipart
     @POST("attendances")

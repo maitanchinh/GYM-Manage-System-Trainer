@@ -20,6 +20,8 @@ class AttendanceViewModel @Inject constructor(private val attendanceRepository: 
     val attendances: StateFlow<DataState<Response<Attendance>>> = _attendances
     private val _attendance = MutableStateFlow<DataState<Attendance>>(DataState.Idle)
     val attendance: StateFlow<DataState<Attendance>> = _attendance
+    private val _trainerAttendances = MutableStateFlow<DataState<Response<Attendance>>>(DataState.Idle)
+    val trainerAttendances: StateFlow<DataState<Response<Attendance>>> = _trainerAttendances
 
     fun fetchAttendances(filterRequestBody: FilterRequestBody) {
         viewModelScope.launch {
@@ -46,6 +48,21 @@ class AttendanceViewModel @Inject constructor(private val attendanceRepository: 
                 e.printStackTrace()
                 println("Error at createAttendance: ${e.message}")
                 _attendance.value = DataState.Error(e.message ?: "Unknown error")
+            }
+        }
+    }
+
+    fun fetchTrainerAttendances(filterRequestBody: FilterRequestBody) {
+        viewModelScope.launch {
+            _trainerAttendances.value = DataState.Loading
+            try {
+                val response: Response<Attendance> =
+                    attendanceRepository.getTrainerAttendances(filterRequestBody)
+                _trainerAttendances.value = DataState.Success(response)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                println("Error at fetchTrainerAttendances: ${e.message}")
+                _trainerAttendances.value = DataState.Error(e.message ?: "Unknown error")
             }
         }
     }

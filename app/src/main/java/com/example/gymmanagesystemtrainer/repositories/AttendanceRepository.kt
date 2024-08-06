@@ -15,4 +15,6 @@ class AttendanceRepository @Inject constructor(private val attendanceApiService:
         val slotIdPart = slotId.let { RequestBody.create("text/plain".toMediaTypeOrNull(), it) }
         return attendanceApiService.createAttendance(memberId = memberIdPart, slotId = slotIdPart)
     }
+
+    suspend fun getTrainerAttendances(filterRequestBody: FilterRequestBody) = attendanceApiService.getTrainerAttendances(filterRequestBody)
 }

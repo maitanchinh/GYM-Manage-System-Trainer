@@ -52,6 +52,7 @@ android {
 }
 
 dependencies {
+    implementation(libs.zxing.core)
     runtimeOnly(libs.accompanist.swiperefresh)
     implementation(libs.accompanist.swiperefresh)
 //    implementation (libs.com.google.firebase.firebase.ml.vision2)
