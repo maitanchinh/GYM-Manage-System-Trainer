@@ -37,6 +37,7 @@ fun FeedbackItem(
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(bottom = 16.dp)
             .clip(shape = RoundedCornerShape(16.dp))
             .background(color = MaterialTheme.colorScheme.secondaryContainer)
     ) {

@@ -47,7 +47,7 @@ class ClassViewModel @Inject constructor(private val classRepository: ClassRepos
 //                _classes.value = response
             } catch (e: Exception) {
                 e.printStackTrace()
-                println("Error: ${e.message}")
+                println("Error at fetchClasses: ${e.message}")
                 _classes.value = DataState.Error(e.message ?: "Unknown error")
             }
         }

@@ -81,7 +81,7 @@ fun AttendanceContent(
     var qrString by remember { mutableStateOf("") }
     var qrCodeImage by remember { mutableStateOf<Bitmap?>(null) }
     var isShowDialog by remember { mutableStateOf(false) }
-    var trainerAttendancedLessons by remember { mutableStateOf(ArrayList<Lesson>()) }
+    var trainerAttendancedLessons by remember { mutableStateOf(ArrayList<String>()) }
 
     LaunchedEffect(Unit) {
         lessonViewModel.getLessons(
@@ -137,8 +137,8 @@ fun AttendanceContent(
                             is DataState.Success -> {
                                 val trainerAttendances =
                                     (trainerAttendanceState as DataState.Success).data.data
-                                trainerAttendancedLessons =
-                                    mapAttendanceToSlots(trainerAttendances, lessons)
+                                trainerAttendancedLessons = trainerAttendances.map { it.slot!!.id.toString() }.toCollection(ArrayList())
+                                println("Trainer attendanced lessons: $trainerAttendancedLessons")
                             }
                             else -> {}
                         }
@@ -210,7 +210,7 @@ fun AttendanceContent(
                                                 )
                                             }
                                         } else if (lessons[index].isPast && trainerAttendancedLessons.isNotEmpty()) {
-                                            if (trainerAttendancedLessons[index].isAttendance) {
+                                            if (trainerAttendancedLessons.contains(lessons[index].id)) {
                                                 Icon(
                                                     painter = painterResource(id = R.drawable.round_check_circle_outline_24),
                                                     contentDescription = null,
