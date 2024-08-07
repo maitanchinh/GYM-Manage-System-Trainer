@@ -1,6 +1,7 @@
 package com.example.gymmanagesystemtrainer.viewmodel
 
 import android.content.Context
+import android.graphics.Bitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -14,6 +15,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -33,6 +35,18 @@ class UserViewModel @Inject constructor(
     val password : StateFlow<String> = _password
     private val _confirmPassword = MutableStateFlow("")
     val confirmPassword : StateFlow<String> = _confirmPassword
+    private val _phone = MutableStateFlow("")
+    val phone: StateFlow<String> = _phone
+    private val _gender = MutableStateFlow("Choose gender")
+    val gender: StateFlow<String> = _gender
+    private val _status = MutableStateFlow("")
+    val status: StateFlow<String> = _status
+    private val _dateOfBirth = MutableStateFlow("")
+    val dateOfBirth: StateFlow<String> = _dateOfBirth
+    private val _imageBitmap = MutableStateFlow<Bitmap?>(null)
+    val imageBitmap: StateFlow<Bitmap?> = _imageBitmap
+    private val _avatar = MutableStateFlow<File?>(null)
+    val avatar: StateFlow<File?> = _avatar
 
     fun onNameChange(newName: String) {
         _name.value = newName

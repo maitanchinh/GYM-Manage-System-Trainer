@@ -11,5 +11,7 @@ data class User(
     @SerializedName("role") var role: String? = null,
     @SerializedName("status") var status: String? = null,
     @SerializedName("createAt") var createAt: String? = null,
-    @SerializedName("avatarUrl") var avatarUrl: String? = null
+    @SerializedName("avatarUrl") var avatarUrl: String? = null,
+    @SerializedName("dateOfBirth") var dateOfBirth: String? = null,
+    @SerializedName("gender") var gender: String? = null,
 )

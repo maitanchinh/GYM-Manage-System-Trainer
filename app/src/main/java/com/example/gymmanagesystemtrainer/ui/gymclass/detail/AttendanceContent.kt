@@ -138,7 +138,6 @@ fun AttendanceContent(
                                 val trainerAttendances =
                                     (trainerAttendanceState as DataState.Success).data.data
                                 trainerAttendancedLessons = trainerAttendances.map { it.slot!!.id.toString() }.toCollection(ArrayList())
-                                println("Trainer attendanced lessons: $trainerAttendancedLessons")
                             }
                             else -> {}
                         }
