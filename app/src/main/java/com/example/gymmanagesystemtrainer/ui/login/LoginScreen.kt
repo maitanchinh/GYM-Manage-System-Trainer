@@ -44,12 +44,12 @@ fun LoginScreen(
         TextField(value = password, label = "Password", visualTransformation = PasswordVisualTransformation(), onTextChange = authViewModel::onPasswordChange)
         Spacer(modifier = Modifier.height(32.dp))
         LargeButton(text = "Login", isLoading = isLoading, onClick = {authViewModel.login(email, password)}, enabled = email.isNotEmpty() && password.isNotEmpty())
-        Spacer(modifier = Modifier.height(16.dp))
-        TextButton(onClick = {
-            navController.navigate(Route.Signup.route)
-        }) {
-            Text(text = "Don't have an account? Register now!")
-        }
+//        Spacer(modifier = Modifier.height(16.dp))
+//        TextButton(onClick = {
+//            navController.navigate(Route.Signup.route)
+//        }) {
+//            Text(text = "Don't have an account? Register now!")
+//        }
         when(authState) {
 //            is DataState.Loading -> {
 //                CircularProgressIndicator()

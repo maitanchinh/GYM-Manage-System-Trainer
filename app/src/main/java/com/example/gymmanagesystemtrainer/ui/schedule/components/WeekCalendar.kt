@@ -69,7 +69,7 @@ fun convertDateFormat(inputDate: String): String {
     // Định dạng của chuỗi ngày ban đầu
     val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault())
     // Định dạng mong muốn
-    val outputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
 
     // Phân tích chuỗi ngày ban đầu thành đối tượng Date
     val date: Date = inputFormat.parse(inputDate)!!

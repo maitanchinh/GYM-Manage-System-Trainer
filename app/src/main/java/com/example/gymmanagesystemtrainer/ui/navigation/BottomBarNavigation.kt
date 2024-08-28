@@ -10,6 +10,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.gymmanagesystemtrainer.ui.equipment.BorrowEquipmentScreen
+import com.example.gymmanagesystemtrainer.ui.equipment.BorrowRequestScreen
 import com.example.gymmanagesystemtrainer.ui.gymclass.AllClassScreen
 import com.example.gymmanagesystemtrainer.ui.gymclass.ClassScreen
 import com.example.gymmanagesystemtrainer.ui.gymclass.component.QRScanner
@@ -36,14 +38,20 @@ fun BottomBarNavigation(
         startDestination = Route.Schedule.route,
         modifier = modifier,
     ) {
-        composable(Route.Schedule.route) { ScheduleScreen(onClassClick = { courseId, classId ->
-            navController.navigate(Route.ClassDetail.createRouteWithId(courseId, classId))
-        }) }
+        composable(Route.Schedule.route) {
+            ScheduleScreen(onClassClick = { courseId, classId ->
+                navController.navigate(Route.ClassDetail.createRouteWithId(courseId, classId))
+            }, onBorrowClick = { id ->
+                navController.navigate(Route.BorrowEquipment.createRouteWithId(id))
+            })
+        }
         composable(Route.Profile.route) {
-            ProfileScreen(onProfileDetailClick = { id ->
-                navController.navigate(Route.ProfileDetail.createRouteWithId(id))
-            },
-                onLogoutClick = onLogoutClick)
+            ProfileScreen(
+                onProfileDetailClick = { id ->
+                    navController.navigate(Route.ProfileDetail.createRouteWithId(id))
+                },
+                onLogoutClick = onLogoutClick
+            )
         }
         composable(Route.ClassDetail.route) { backStackEntry ->
             val courseId = backStackEntry.arguments?.getString("courseId")
@@ -61,6 +69,19 @@ fun BottomBarNavigation(
         }
         composable(Route.QRScanner.route) {
             QRScanner()
+        }
+        composable(Route.BorrowEquipment.route) { backStackEntry ->
+            val slotId = backStackEntry.arguments?.getString("slotId")
+            BorrowEquipmentScreen(slotId = slotId!!, onBack = {
+                navController.popBackStack()
+            },
+                onBorrowRequestListClick = {
+                    navController.navigate(Route.BorrowRequest.createRouteWithId(slotId))
+                })
+        }
+        composable(Route.BorrowRequest.route) { backStackEntry ->
+            val slotId = backStackEntry.arguments?.getString("slotId")
+            BorrowRequestScreen(slotId = slotId!!)
         }
     }
 }

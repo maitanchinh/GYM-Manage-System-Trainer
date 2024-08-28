@@ -15,6 +15,7 @@ import com.example.gymmanagesystemtrainer.network.CategoryApiService
 import com.example.gymmanagesystemtrainer.network.ClassApiService
 import com.example.gymmanagesystemtrainer.network.CommunicationApiService
 import com.example.gymmanagesystemtrainer.network.CourseApiService
+import com.example.gymmanagesystemtrainer.network.EquipmentApiService
 import com.example.gymmanagesystemtrainer.network.FeedbackApiService
 import com.example.gymmanagesystemtrainer.network.LessonApiService
 import com.example.gymmanagesystemtrainer.network.UserApiService
@@ -155,5 +156,11 @@ object NetworkModule {
     @Provides
     fun provideFeedbackApiService(retrofit: Retrofit): FeedbackApiService {
         return retrofit.create(FeedbackApiService::class.java)
+    }
+
+    @Singleton
+    @Provides
+    fun provideEquipmentApiService(retrofit: Retrofit): EquipmentApiService {
+        return retrofit.create(EquipmentApiService::class.java)
     }
 }

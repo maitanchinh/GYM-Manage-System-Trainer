@@ -13,11 +13,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun LargeButton(text: String, isLoading: Boolean, enabled: Boolean = true, onClick: () -> Unit) {
+fun LargeButton(modifier: Modifier = Modifier, text: String, isLoading: Boolean, enabled: Boolean = true, onClick: () -> Unit) {
     Button(
         enabled = enabled,
         onClick = onClick,
-        modifier = Modifier.fillMaxWidth()
+        modifier = modifier.fillMaxWidth()
     ) {
         if (isLoading) {
             CircularProgressIndicator(modifier = Modifier.size(24.dp).background(MaterialTheme.colorScheme.primary).padding(8.dp))

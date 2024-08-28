@@ -72,6 +72,7 @@ fun ScheduleScreen(
     classViewModel: ClassViewModel = hiltViewModel(),
     courseViewModel: CourseViewModel = hiltViewModel(),
     onClassClick: (courseId: String, classId: String) -> Unit,
+    onBorrowClick: (slotId: String) -> Unit
 ) {
     val notificationCount by remember { mutableStateOf(2) }
     val user = userViewModel.getUser()
@@ -98,7 +99,6 @@ fun ScheduleScreen(
         classViewModel.fetchClassesEnrolled(FilterRequestBody(status = "Active"))
         classViewModel.fetchLessons(
             FilterRequestBody(
-                pagination = Pagination(pageSize = 100),
                 orderBy = "StartTime",
                 isAscending = true
             )
@@ -110,7 +110,6 @@ fun ScheduleScreen(
         classViewModel.fetchClassesEnrolled(FilterRequestBody(status = "Active"))
         classViewModel.fetchLessons(
             FilterRequestBody(
-                pagination = Pagination(pageSize = 100),
                 orderBy = "StartTime",
                 isAscending = true
             )
@@ -215,12 +214,13 @@ fun ScheduleScreen(
                         val myCourses = ArrayList<Course>()
                         courses.find { it.classes.find { cl -> cl.id == gClass.id } != null }
                             ?.copy(classes = arrayListOf(gClass))?.let { myCourses.add(it) }
+                        println("My courses: $myCourses")
                         if (myCourses.isNotEmpty()) {
                             HorizontalPager(
                                 state = rememberPagerState(pageCount = { myCourses.size }),
                                 pageSpacing = 16.dp
                             ) { page ->
-                                InDay(myCourses[page])
+                                InDay(myCourses[page], onBorrowClick = onBorrowClick)
                             }
                         } else Text(text = "You have no class")
                     }

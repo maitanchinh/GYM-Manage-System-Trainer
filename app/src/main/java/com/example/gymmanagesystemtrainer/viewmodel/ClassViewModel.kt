@@ -19,8 +19,6 @@ import javax.inject.Inject
 @HiltViewModel
 class ClassViewModel @Inject constructor(private val classRepository: ClassRepository, private val lessonRepository: LessonRepository,) :
     ViewModel() {
-
-//    private val _classes = MutableStateFlow(Classes())
     private val _classes = MutableStateFlow<DataState<Response<GClass>>>(DataState.Loading)
     private val _class = MutableStateFlow(GClass())
 //    val classes: StateFlow<Classes> = _classes

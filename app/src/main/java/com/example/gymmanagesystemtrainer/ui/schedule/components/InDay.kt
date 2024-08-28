@@ -1,6 +1,7 @@
 package com.example.gymmanagesystemtrainer.ui.schedule.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,6 +10,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -18,6 +22,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -32,7 +37,7 @@ import java.time.Duration
 import java.time.LocalTime
 
 @Composable
-fun InDay(course: Course) {
+fun InDay(course: Course, onBorrowClick: (lessonId: String) -> Unit) {
     val lessons = course.classes.first().lessons
     val upcomingLesson = lessons[course.classes[0].lessonCount!!]
     Box(
@@ -44,35 +49,59 @@ fun InDay(course: Course) {
         Column(
             modifier = Modifier.padding(4.dp)
         ) {
-            Row(modifier = Modifier.padding(12.dp)) {
-                AsyncImage(
-                    model = ImageRequest.Builder(LocalContext.current)
-                        .data(course.thumbnailUrl)
-                        .placeholder(R.drawable.placeholder).error(R.drawable.placeholder)
-                        .build(),
-                    contentDescription = "Course Image",
-                    contentScale = ContentScale.Crop,
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(shape = RoundedCornerShape(16.dp))
-                )
-                Gap.k16.Width()
-                Column {
-                    Text(
-                        text = "#" + (lessons.indexOf(upcomingLesson) + 1).toString(),
-                        style = MaterialTheme.typography.bodyMedium,
-                        color = Color.Gray
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Row(modifier = Modifier.padding(12.dp)) {
+                    AsyncImage(
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(course.thumbnailUrl)
+                            .placeholder(R.drawable.placeholder).error(R.drawable.placeholder)
+                            .build(),
+                        contentDescription = "Course Image",
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(100.dp)
+                            .clip(shape = RoundedCornerShape(16.dp))
                     )
-                    Gap.k8.Height()
-                    Text(
-                        text = "${upcomingLesson.name}",
-                        style = MaterialTheme.typography.bodyLarge,
-                        fontWeight = FontWeight.Medium
-                    )
-                    Gap.k8.Height()
-                    Text(
-                        text = "${Duration.between(LocalTime.parse(course.classes[0].from), LocalTime.parse(course.classes[0].to)).toMinutes()} min",
-                        style = MaterialTheme.typography.bodyMedium,
+                    Gap.k16.Width()
+                    Column {
+                        Text(
+                            text = "#" + (lessons.indexOf(upcomingLesson) + 1).toString(),
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+                        Gap.k8.Height()
+                        Text(
+                            text = "${upcomingLesson.name}",
+                            style = MaterialTheme.typography.bodyLarge,
+                            fontWeight = FontWeight.Medium
+                        )
+                        Gap.k8.Height()
+                        Text(
+                            text = "${
+                                Duration.between(
+                                    LocalTime.parse(course.classes[0].from),
+                                    LocalTime.parse(course.classes[0].to)
+                                ).toMinutes()
+                            } min",
+                            style = MaterialTheme.typography.bodyMedium,
+                        )
+                    }
+                }
+                IconButton(
+                    colors = IconButtonColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        contentColor = MaterialTheme.colorScheme.onPrimary,
+                        disabledContainerColor = MaterialTheme.colorScheme.primaryContainer,
+                        disabledContentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ), onClick = {
+                        onBorrowClick(upcomingLesson.id!!)
+                    }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.round_fitness_center_24),
+                        contentDescription = "Borrow material"
                     )
                 }
             }
@@ -93,7 +122,8 @@ fun InDay(course: Course) {
                     )
                     Gap.k8.Height()
                     LinearProgressIndicator(
-                        progress = {course.classes[0].lessonCount!!.toFloat() / course.classes[0].totalLesson!!.toFloat() }, modifier = Modifier
+                        progress = { course.classes[0].lessonCount!!.toFloat() / course.classes[0].totalLesson!!.toFloat() },
+                        modifier = Modifier
                             .fillMaxWidth()
                             .clip(shape = RoundedCornerShape(8.dp))
                     )

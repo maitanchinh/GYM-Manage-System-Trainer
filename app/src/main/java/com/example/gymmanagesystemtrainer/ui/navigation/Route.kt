@@ -19,4 +19,14 @@ sealed class Route(val route: String) {
         }
     }
     data object QRScanner : Route("schedule/classDetail/qrScanner")
+    data object BorrowEquipment : Route("borrowEquipment/{slotId}"){
+        fun createRouteWithId(slotId: String): String {
+            return "borrowEquipment/$slotId"
+        }
+    }
+    data object BorrowRequest : Route("borrowRequest/{slotId}"){
+        fun createRouteWithId(slotId: String): String {
+            return "borrowRequest/$slotId"
+        }
+    }
 }
