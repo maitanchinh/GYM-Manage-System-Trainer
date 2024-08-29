@@ -8,7 +8,9 @@ import com.example.gymmanagesystemtrainer.utils.RequiresAuth
 import retrofit2.http.Body
 import retrofit2.http.DELETE
 import retrofit2.http.POST
+import retrofit2.http.PUT
 import retrofit2.http.Path
+import retrofit2.http.Query
 
 interface EquipmentApiService {
     @POST("admin/equipments/filter")
@@ -23,6 +25,10 @@ interface EquipmentApiService {
 
     @DELETE("slot-equipments/{id}")
     suspend fun deleteSlotEquipment(@Path("id") id: String) : SlotEquipment
+
+    @RequiresAuth
+    @PUT("slot-equipments/repay-request")
+    suspend fun repayRequest(@Query("id") id: String) : SlotEquipment
 }
 
 data class BorrowRequestBody(

@@ -43,6 +43,7 @@ import com.example.gymmanagesystemtrainer.model.FilterRequestBody
 import com.example.gymmanagesystemtrainer.model.SlotEquipment
 import com.example.gymmanagesystemtrainer.ui.component.Gap
 import com.example.gymmanagesystemtrainer.ui.component.IconTextField
+import com.example.gymmanagesystemtrainer.ui.equipment.component.RequestItem
 import com.example.gymmanagesystemtrainer.ui.theme.ForestGreen
 import com.example.gymmanagesystemtrainer.ui.theme.GoldYellow
 import com.example.gymmanagesystemtrainer.utils.DataState
@@ -83,7 +84,7 @@ fun BorrowRequestScreen(
                     trainerId = profileViewModel.getUser()!!.id
                 )
             )
-            Toast.makeText(context, "Request updated", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Success", Toast.LENGTH_SHORT).show()
         } else if (slotEquipmentState is DataState.Error) {
             Toast.makeText(context, (slotEquipmentState as DataState.Error).message, Toast.LENGTH_SHORT).show()
         }
@@ -158,7 +159,9 @@ fun BorrowRequestScreen(
                                     }
                                 },
                                 content = {
-                                    RequestItem(se)
+                                    RequestItem(se, onRepayClick = {
+                                        equipmentViewModel.repayRequest(se.id!!)
+                                    })
                                 })
                             Gap.k16.Height()
                         }
@@ -166,59 +169,18 @@ fun BorrowRequestScreen(
 
                 is DataState.Error -> {
                     val error = (slotEquipmentsState as DataState.Error).message
-
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = error,
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                    }
                 }
 
                 else -> {}
-            }
-        }
-    }
-}
-
-@Composable
-private fun RequestItem(it: SlotEquipment) {
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(shape = RoundedCornerShape(16.dp))
-            .background(color = MaterialTheme.colorScheme.secondaryContainer)
-            .padding(16.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data(it.equipment?.thumbnailUrl).placeholder(
-                        R.drawable.placeholder
-                    ).error(R.drawable.error).build(),
-                contentDescription = "",
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .height(70.dp)
-                    .aspectRatio(1f)
-                    .clip(RoundedCornerShape(8.dp))
-            )
-            Gap.k16.Width()
-            Column(
-                modifier = Modifier.fillMaxWidth(),
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = it.equipment!!.name.toString(),
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
-                Text(
-                    text = it.status.toString(),
-                    style = MaterialTheme.typography.bodyMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = if (it.status!!.contains("Accept")) ForestGreen else if (it.status!!.contains(
-                            "Reject"
-                        )
-                    ) MaterialTheme.colorScheme.error else GoldYellow
-                )
             }
         }
     }

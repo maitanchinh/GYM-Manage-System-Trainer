@@ -75,4 +75,16 @@ class EquipmentViewModel @Inject constructor(private val equipmentRepository: Eq
             }
         }
     }
+
+    fun repayRequest(id: String) {
+        viewModelScope.launch {
+            _slotEquipment.value = DataState.Loading
+            try {
+                val response = equipmentRepository.repayRequest(id = id)
+                _slotEquipment.value = DataState.Success(response)
+            } catch (e: HttpException) {
+                _slotEquipment.value = DataState.Error(ErrorHandler(e.code()))
+            }
+        }
+    }
 }

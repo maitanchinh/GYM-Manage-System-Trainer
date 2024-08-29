@@ -10,4 +10,5 @@ class EquipmentRepository @Inject constructor(private val equipmentApiService: E
     suspend fun borrowRequestList(borrowRequestBody: BorrowRequestBody) = equipmentApiService.borrowRequestList(borrowRequestBody)
     suspend fun getSlotEquipments(filterRequestBody: FilterRequestBody) = equipmentApiService.getSlotEquipments(filterRequestBody)
     suspend fun deleteSlotEquipment(id: String) = equipmentApiService.deleteSlotEquipment(id)
+    suspend fun repayRequest(id: String) = equipmentApiService.repayRequest(id)
 }
