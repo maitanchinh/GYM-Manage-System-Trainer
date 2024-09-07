@@ -67,9 +67,9 @@ fun compareDatesIgnoringTime(date1: Date, date2: Date): Boolean {
 
 fun convertDateFormat(inputDate: String): String {
     // Định dạng của chuỗi ngày ban đầu
-    val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.getDefault())
+    val inputFormat = SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy", Locale.ENGLISH)
     // Định dạng mong muốn
-    val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.getDefault())
+    val outputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH)
 
     // Phân tích chuỗi ngày ban đầu thành đối tượng Date
     val date: Date = inputFormat.parse(inputDate)!!
