@@ -299,10 +299,10 @@ fun ProfileDetailScreen(
                             avatar = avatar
                         )
                     })
-                Gap.k16.Height()
-                TextButton(onClick = { /*TODO*/ }) {
-                    Text(text = "Change password")
-                }
+//                Gap.k16.Height()
+//                TextButton(onClick = { /*TODO*/ }) {
+//                    Text(text = "Change password")
+//                }
             }
         }
 

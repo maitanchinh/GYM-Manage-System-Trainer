@@ -166,9 +166,10 @@ fun FeedbackContent(
                 is DataState.Success -> {
                     val lessons = (lessonsState as DataState.Success).data.data
                     val listState = rememberLazyListState()
-                    val currentLesson = lessons.first {parseDateTime(it.endTime!!).isAfter(LocalDateTime.now()) }
+                    val currentLesson = lessons.firstOrNull() {parseDateTime(it.endTime!!).isAfter(LocalDateTime.now()) }
                     LaunchedEffect(Unit) {
-                        listState.scrollToItem(lessons.indexOf(currentLesson))
+                        if (currentLesson != null)
+                            listState.scrollToItem(lessons.indexOf(currentLesson))
                     }
                     LazyColumn(
                         modifier = modifier,
@@ -192,9 +193,9 @@ fun FeedbackContent(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .clip(shape = RoundedCornerShape(8.dp))
-                                    .background(color = if (currentLesson.id == lessons[index].id) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.secondaryContainer)
+                                    .background(color = if (currentLesson != null && currentLesson.id == lessons[index].id) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.secondaryContainer)
                                     .clickable {
-                                        if (currentLesson.id == lessons[index].id) {
+                                        if (currentLesson != null && currentLesson.id == lessons[index].id) {
                                             feedbackViewModel.setShowOpenFeedbackDialog()
                                             feedbackViewModel.setLessonChangedFeedbackStatus(lessons[index])
                                         }

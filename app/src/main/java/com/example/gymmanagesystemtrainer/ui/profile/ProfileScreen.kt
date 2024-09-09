@@ -105,21 +105,21 @@ fun ProfileScreen(
                         "Profile Details"
                     )
                 }
-                Spacer(modifier = Modifier.padding(8.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Start,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_payment_2),
-                        contentDescription = null
-                    )
-                    Spacer(modifier = Modifier.padding(start = 32.dp))
-                    Text(
-                        "Billing",
-                    )
-                }
+//                Spacer(modifier = Modifier.padding(8.dp))
+//                Row(
+//                    modifier = Modifier.fillMaxWidth(),
+//                    horizontalArrangement = Arrangement.Start,
+//                    verticalAlignment = Alignment.CenterVertically
+//                ) {
+//                    Icon(
+//                        painter = painterResource(id = R.drawable.baseline_payment_2),
+//                        contentDescription = null
+//                    )
+//                    Spacer(modifier = Modifier.padding(start = 32.dp))
+//                    Text(
+//                        "Billing",
+//                    )
+//                }
                 Spacer(modifier = Modifier.padding(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
