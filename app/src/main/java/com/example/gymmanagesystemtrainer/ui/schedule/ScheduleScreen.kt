@@ -151,27 +151,27 @@ fun ScheduleScreen(
                             fontWeight = FontWeight.Bold,
                         )
                     }
-                    Box(modifier = Modifier.size(40.dp)) {
-                        IconButton(onClick = { /*TODO*/ }) {
-                            BadgedBox(badge = {
-                                if (notificationCount > 0) {
-                                    Badge(
-                                        containerColor = MaterialTheme.colorScheme.error,
-                                        contentColor = Color.White,
-                                        modifier = Modifier.offset(x = (-10).dp, y = 10.dp)
-                                    ) {
-                                        Text(text = notificationCount.toString())
-                                    }
-                                }
-                            }) {
-                                Icon(
-                                    painter = painterResource(id = R.drawable.round_notifications_32),
-                                    contentDescription = "Notification",
-                                    tint = Color(0xFFED9455)
-                                )
-                            }
-                        }
-                    }
+//                    Box(modifier = Modifier.size(40.dp)) {
+//                        IconButton(onClick = { /*TODO*/ }) {
+//                            BadgedBox(badge = {
+//                                if (notificationCount > 0) {
+//                                    Badge(
+//                                        containerColor = MaterialTheme.colorScheme.error,
+//                                        contentColor = Color.White,
+//                                        modifier = Modifier.offset(x = (-10).dp, y = 10.dp)
+//                                    ) {
+//                                        Text(text = notificationCount.toString())
+//                                    }
+//                                }
+//                            }) {
+//                                Icon(
+//                                    painter = painterResource(id = R.drawable.round_notifications_32),
+//                                    contentDescription = "Notification",
+//                                    tint = Color(0xFFED9455)
+//                                )
+//                            }
+//                        }
+//                    }
                 }
 
             }
